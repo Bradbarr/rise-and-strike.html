@@ -1126,17 +1126,25 @@
       <p class="sub reveal reveal-delay-2">Drop us a message and we'll get back to you within 24 hours to discuss your goals and get you booked in. First session is all about you.</p>
       <div class="contact-chips reveal reveal-delay-2">
         <a href="tel:+44" class="contact-chip"><span>📞</span> Call Us</a>
-        <a href="/cdn-cgi/l/email-protection#fb939e979794bb8992889e9a959f888f8992909ed59894d58e90" class="contact-chip"><span>✉️</span> Email Us</a>
+        <a href="mailto:Rise.and.Strike@proton.me" class="contact-chip"><span>✉️</span> Rise.and.Strike@proton.me</a>
         <a href="#" class="contact-chip"><span>📍</span> South Wales</a>
       </div>
       <div class="contact-area reveal reveal-delay-3">
-        <label>Your Name</label>
-        <input type="text" placeholder="John Smith">
-        <label>Email Address</label>
-        <input type="email" placeholder="john@example.com">
-        <label>What are you looking to achieve?</label>
-        <textarea placeholder="Tell us about your goals, any injuries we should know about, or what kind of session you're interested in..."></textarea>
-        <button class="send-btn">Send Message 🥊</button>
+        <form action="https://formspree.io/f/mdawnwzy" method="POST" id="contactForm">
+          <label>Your Name</label>
+          <input type="text" name="name" placeholder="John Smith" required>
+          <label>Email Address</label>
+          <input type="email" name="email" placeholder="john@example.com" required>
+          <label>What are you looking to achieve?</label>
+          <textarea name="message" placeholder="Tell us about your goals, any injuries we should know about, or what kind of session you're interested in..." required></textarea>
+          <button type="submit" class="send-btn" id="submitBtn">Send Message 🥊</button>
+          <div id="formSuccess" style="display:none; margin-top:1rem; padding:1rem; background:rgba(255,184,0,0.1); border:1px solid rgba(255,184,0,0.3); border-radius:10px; text-align:center; font-weight:800; color:var(--gold);">
+            ✅ Message sent! We'll be in touch within 24 hours.
+          </div>
+          <div id="formError" style="display:none; margin-top:1rem; padding:1rem; background:rgba(255,77,28,0.1); border:1px solid rgba(255,77,28,0.3); border-radius:10px; text-align:center; font-weight:800; color:var(--fire);">
+            ❌ Something went wrong. Please email us directly at Rise.and.Strike@proton.me
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -1149,7 +1157,7 @@
   <p>NASM Level 4 CPT · CES · WLS</p>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -1173,6 +1181,21 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
   }, { threshold: 0.15 });
   reveals.forEach(r => observer.observe(r));
-</script>
-</body>
-</html>
+
+  // Contact form
+  const form = document.getElementById('contactForm');
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          document.getElementById('formSuccess').style.display = 'block';
+          document
