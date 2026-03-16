@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rise & Strike | Client App</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fire: #FF4D1C;
+    --gold: #FFB800;
+    --dark: #0f0f0f;
+    --charcoal: #1a1a1a;
+    --card: #222222;
+    --card2: #2a2a2a;
+    --white: #ffffff;
+    --muted: #888;
+    --green: #22c55e;
+    --red: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--dark); color: var(--white); font-family: 'Nunito', sans-serif; min-height: 100vh; }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ── SPLASH ── */
+  #screen-splash {
+    align-items: center; justify-content: center; text-align: center;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(255,77,28,0.13) 0%, transparent 65%), var(--dark);
+    padding: 2rem;
+  }
+  .splash-logo { font-family: 'Bebas Neue', sans-serif; font-size: 4.5rem; letter-spacing: 0.04em; line-height: 1; }
+  .splash-logo span { color: var(--fire); }
+  .splash-sub { color: var(--muted); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; margin-top: 0.4rem; }
+  .splash-divider { width: 48px; height: 2px; background: linear-gradient(90deg, var(--fire), var(--gold)); margin: 2rem auto; }
+  .splash-btns { display: flex; flex-direction: column; gap: 0.9rem; width: 100%; max-width: 320px; margin-top: 0.5rem; }
+
+  /* ── BUTTONS ── */
+  .btn { padding: 0.95rem 1.5rem; border-radius: 12px; border: none; font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s; width: 100%; }
+  .btn:active { transform: scale(0.97); }
+  .btn-fire { background: var(--fire); color: #fff; box-shadow: 0 4px 20px rgba(255,77,28,0.35); }
+  .btn-fire:hover { box-shadow: 0 6px 28px rgba(255,77,28,0.5); transform: translateY(-2px); }
+  .btn-gold { background: var(--gold); color: var(--dark); box-shadow: 0 4px 20px rgba(255,184,0,0.25); }
+  .btn-gold:hover { box-shadow: 0 6px 28px rgba(255,184,0,0.4); transform: translateY(-2px); }
+  .btn-ghost { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,0.15); }
+  .btn-ghost:hover { border-color: var(--fire); color: var(--fire); }
+  .btn-sm { padding: 0.55rem 1rem; font-size: 0.78rem; border-radius: 8px; width: auto; }
+  .btn-danger { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+  .btn-danger:hover { background: rgba(239,68,68,0.25); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+
+  /* ── TOP BAR ── */
+  .topbar { background: rgba(15,15,15,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,77,28,0.12); padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .topbar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.05em; }
+  .topbar-logo span { color: var(--fire); }
+  .topbar-right { display: flex; align-items: center; gap: 0.7rem; }
+  .topbar-user { font-size: 0.78rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .icon-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 0.4rem 0.7rem; font-size: 0.8rem; cursor: pointer; color: var(--muted); font-family: 'Nunito', sans-serif; font-weight: 700; transition: border-color 0.2s, color 0.2s; }
+  .icon-btn:hover { border-color: var(--fire); color: var(--fire); }
+
+  /* ── CONTENT AREA ── */
+  .content { flex: 1; padding: 1.4rem 1.2rem 6rem; max-width: 680px; margin: 0 auto; width: 100%; }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,20,20,0.97); backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; z-index: 50; }
+  .nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25rem; padding: 0.7rem 0.4rem; cursor: pointer; transition: color 0.2s; color: var(--muted); border: none; background: none; font-family: 'Nunito', sans-serif; }
+  .nav-tab .nav-icon { font-size: 1.3rem; }
+  .nav-tab .nav-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .nav-tab.active { color: var(--fire); }
+  .nav-tab.active .nav-icon { filter: drop-shadow(0 0 6px rgba(255,77,28,0.6)); }
+
+  /* ── CARDS ── */
+  .card { background: var(--card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 1.3rem; margin-bottom: 1rem; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+  .card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.04em; }
+  .card-sub { font-size: 0.78rem; color: var(--muted); font-weight: 600; margin-top: 0.15rem; }
+  .section-heading { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+  .section-sub { font-size: 0.82rem; color: var(--muted); font-weight: 600; margin-bottom: 1.2rem; }
+
+  /* ── FORMS ── */
+  .form-group { margin-bottom: 1rem; }
+  .form-label { display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+  .form-input { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); border-radius: 10px; padding: 0.8rem 1rem; color: var(--white); font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 600; outline: none; transition: border-color 0.2s; }
+  .form-input:focus { border-color: var(--fire); }
+  .form-input::placeholder { color: #555; }
+  textarea.form-input { resize: vertical; min-height: 80px; }
+  select.form-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.9rem center; padding-right: 2.2rem; cursor: pointer; }
+  select.form-input option { background: var(--charcoal); }
+
+  /* ── BADGES / TAGS ── */
+  .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.65rem; border-radius: 100px; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .badge-fire { background: rgba(255,77,28,0.15); border: 1px solid rgba(255,77,28,0.25); color: var(--fire); }
+  .badge-gold { background: rgba(255,184,0,0.12); border: 1px solid rgba(255,184,0,0.22); color: var(--gold); }
+  .badge-green { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.22); color: var(--green); }
+  .badge-muted { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--muted); }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: rgba(255,255,255,0.06); margin: 1.2rem 0; }
+
+  /* ── TOAST ── */
+  #toast { position: fixed; bottom: 5.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--card2); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.75rem 1.4rem; font-size: 0.85rem; font-weight: 700; color: var(--white); z-index: 200; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #toast.success { border-color: rgba(34,197,94,0.4); color: var(--green); }
+  #toast.error { border-color: rgba(239,68,68,0.4); color: var(--red); }
+
+  /* ── MODAL ── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 100; align-items: flex-end; justify-content: center; padding: 1rem; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--charcoal); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px 20px 16px 16px; padding: 1.5rem; width: 100%; max-width: 520px; max-height: 88vh; overflow-y: auto; }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.04em; margin-bottom: 1.2rem; }
+
+  /* ── EXERCISE ROW ── */
+  .exercise-row { background: var(--card2); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 1rem; margin-bottom: 0.7rem; }
+  .exercise-name { font-weight: 800; font-size: 0.95rem; margin-bottom: 0.6rem; }
+  .sets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+  .set-input-group { display: flex; flex-direction: column; gap: 0.2rem; }
+  .set-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .set-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem 0.6rem; color: var(--white); font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 700; outline: none; width: 100%; text-align: center; transition: border-color 0.2s; }
+  .set-input:focus { border-color: var(--fire); }
+
+  /* ── PROGRESS BARS ── */
+  .progress-bar { height: 6px; background: rgba(255,255,255,0.07); border-radius: 100px; overflow: hidden; margin-top: 0.4rem; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--fire), var(--gold)); border-radius: 100px; transition: width 0.5s ease; }
+
+  /* ── STAT GRID ── */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1rem; }
+  .stat-box { background: var(--card); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 1rem; text-align: center; }
+  .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; color: var(--fire); }
+  .stat-val.gold { color: var(--gold); }
+  .stat-lbl { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
+
+  /* ── LIST ITEMS ── */
+  .list-item { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1rem; background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 0.6rem; transition: border-color 0.2s; cursor: pointer; }
+  .list-item:hover { border-color: rgba(255,77,28,0.3); }
+  .list-item-left { display: flex; align-items: center; gap: 0.8rem; }
+  .list-item-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: rgba(255,77,28,0.1); flex-shrink: 0; }
+  .list-item-title { font-weight: 800; font-size: 0.92rem; }
+  .list-item-sub { font-size: 0.72rem; color: var(--muted); font-weight: 600; margin-top: 0.1rem; }
+  .chevron { color: var(--muted); font-size: 0.85rem; }
+
+  /* ── HISTORY ENTRY ── */
+  .history-entry { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 1.1rem; margin-bottom: 0.8rem; }
+  .history-date { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
+  .history-title { font-weight: 800; font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .history-note { font-size: 0.82rem; color: rgba(255,255,255,0.6); font-weight: 600; margin-top: 0.4rem; font-style: italic; }
+
+  /* ── MEASUREMENT LOG ── */
+  .meas-row { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .meas-row:last-child { border-bottom: none; }
+  .meas-label { font-size: 0.8rem; font-weight: 700; color: var(--muted); }
+  .meas-val { font-weight: 800; font-size: 0.9rem; }
+  .meas-change { font-size: 0.72rem; font-weight: 800; margin-left: 0.4rem; }
+  .meas-up { color: var(--green); }
+  .meas-down { color: var(--red); }
+
+  /* ── ADMIN ── */
+  .admin-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(255,184,0,0.12); border: 1px solid rgba(255,184,0,0.25); border-radius: 100px; padding: 0.3rem 0.8rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.2rem; }
+
+  /* ── EMPTY STATE ── */
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+  .empty-text { font-weight: 700; font-size: 0.9rem; }
+
+  /* ── PHOTO GRID ── */
+  .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
+  .photo-thumb { aspect-ratio: 1; border-radius: 8px; object-fit: cover; width: 100%; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
+  .photo-thumb:hover { border-color: var(--fire); }
+  .photo-add { aspect-ratio: 1; border-radius: 8px; border: 2px dashed rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.4rem; color: var(--muted); transition: border-color 0.2s, color 0.2s; background: rgba(255,255,255,0.02); }
+  .photo-add:hover { border-color: var(--fire); color: var(--fire); }
+
+  /* ── SEARCH ── */
+  .search-wrap { position: relative; margin-bottom: 1rem; }
+  .search-icon { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.9rem; pointer-events: none; }
+  .search-input { padding-left: 2.4rem !important; }
+
+  /* ── FEELING PICKER ── */
+  .feeling-grid { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .feeling-btn { background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.09); border-radius: 10px; padding: 0.5rem 0.9rem; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-family: 'Nunito', sans-serif; font-weight: 700; color: var(--white); }
+  .feeling-btn:hover, .feeling-btn.selected { border-color: var(--fire); background: rgba(255,77,28,0.12); color: var(--fire); }
+
+  /* ── RESPONSIVE ── */
+  @media (min-width: 480px) { .stat-grid { grid-template-columns: repeat(4, 1fr); } }
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- ════════════════════════════════════ SPLASH ════════════════════════════════════ -->
+<div id="screen-splash" class="screen active">
+  <div class="splash-logo">Rise<span>&</span>Strike</div>
+  <div class="splash-sub">Client Training App</div>
+  <div class="splash-divider"></div>
+  <div class="splash-btns">
+    <button class="btn btn-fire" onclick="showScreen('client-login')">🥊 Client Login</button>
+    <button class="btn btn-ghost" onclick="showAdminPrompt()">⚙️ Trainer Admin</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ CLIENT LOGIN ════════════════════════════════════ -->
+<div id="screen-client-login" class="screen">
+  <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(255,77,28,0.1) 0%, transparent 60%), var(--dark);">
+    <div style="width:100%; max-width:340px;">
+      <div style="text-align:center; margin-bottom:2rem;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:2.5rem; letter-spacing:0.04em;">Welcome Back</div>
+        <div style="color:var(--muted); font-size:0.82rem; font-weight:700; margin-top:0.3rem;">Enter your name to find your profile</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Name</label>
+        <input class="form-input" id="clientNameInput" type="text" placeholder="e.g. Sarah Jones" autocomplete="name">
+      </div>
+      <button class="btn btn-fire" onclick="clientLogin()" style="margin-bottom:0.8rem;">Find My Profile →</button>
+      <button class="btn btn-ghost" onclick="showScreen('client-register')">New here? Create Profile</button>
+      <button class="btn btn-ghost" onclick="showScreen('splash')" style="margin-top:0.5rem;">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ CLIENT REGISTER ════════════════════════════════════ -->
+<div id="screen-client-register" class="screen">
+  <div style="flex:1; overflow-y:auto; padding:2rem 1.2rem 3rem; max-width:520px; margin:0 auto; width:100%;">
+    <button class="icon-btn" onclick="showScreen('client-login')" style="margin-bottom:1.5rem;">← Back</button>
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:0.04em; margin-bottom:0.3rem;">Create Your Profile</div>
+    <div class="section-sub">Tell us about yourself so we can track your progress</div>
+
+    <div class="form-group">
+      <label class="form-label">Full Name *</label>
+      <input class="form-input" id="reg-name" type="text" placeholder="Your full name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Age</label>
+      <input class="form-input" id="reg-age" type="number" placeholder="e.g. 28">
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
+      <div class="form-group">
+        <label class="form-label">Height (cm)</label>
+        <input class="form-input" id="reg-height" type="number" placeholder="e.g. 170">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Weight (kg)</label>
+        <input class="form-input" id="reg-weight" type="number" placeholder="e.g. 72">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Primary Goal</label>
+      <select class="form-input" id="reg-goal">
+        <option value="">Select a goal...</option>
+        <option>Lose Weight</option>
+        <option>Build Strength</option>
+        <option>Improve Fitness</option>
+        <option>Learn Boxing / Self-Defence</option>
+        <option>Improve Mobility</option>
+        <option>General Health</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Any Injuries or Notes</label>
+      <textarea class="form-input" id="reg-notes" placeholder="e.g. lower back pain, previous knee surgery..."></textarea>
+    </div>
+    <button class="btn btn-fire" onclick="registerClient()">Create Profile 🥊</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ CLIENT APP ════════════════════════════════════ -->
+<div id="screen-client-app" class="screen">
+  <div class="topbar">
+    <div class="topbar-logo">Rise<span>&</span>Strike</div>
+    <div class="topbar-right">
+      <span class="topbar-user" id="topbar-name"></span>
+      <button class="icon-btn" onclick="clientLogout()">Exit</button>
+    </div>
+  </div>
+
+  <!-- TAB: HOME -->
+  <div class="content" id="tab-home">
+    <div id="home-greeting" style="margin-bottom:1.2rem;">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:0.04em;" id="home-title">Hey 👋</div>
+      <div style="color:var(--muted); font-size:0.82rem; font-weight:700;" id="home-sub">Ready to train?</div>
+    </div>
+
+    <div class="stat-grid" id="home-stats"></div>
+
+    <div class="card" style="border-color:rgba(255,77,28,0.2); background:linear-gradient(135deg,rgba(255,77,28,0.08),rgba(255,184,0,0.04));">
+      <div class="card-title">Start a Session</div>
+      <div class="card-sub" style="margin-bottom:1rem;">Pick a workout and get going</div>
+      <button class="btn btn-fire" onclick="switchTab('log')">🥊 Log a Session</button>
+    </div>
+
+    <div id="home-recent"></div>
+  </div>
+
+  <!-- TAB: PLANS -->
+  <div class="content" id="tab-plans" style="display:none;">
+    <div class="section-heading">Training Plans</div>
+    <div class="section-sub">Plans assigned by your trainer</div>
+    <div id="plans-list"></div>
+  </div>
+
+  <!-- TAB: LOG SESSION -->
+  <div class="content" id="tab-log" style="display:none;">
+    <div class="section-heading">Log Session</div>
+    <div class="section-sub">Record what you completed today</div>
+
+    <div class="card">
+      <div class="form-group">
+        <label class="form-label">Choose a Plan / Workout</label>
+        <select class="form-input" id="log-plan-select" onchange="loadPlanExercises()">
+          <option value="">Select a plan...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="log-date" type="date">
+      </div>
+    </div>
+
+    <div id="log-exercises-section" style="display:none;">
+      <div id="log-exercises"></div>
+
+      <div class="card">
+        <div class="form-group">
+          <label class="form-label">How did you feel?</label>
+          <div class="feeling-grid" id="feeling-grid">
+            <button class="feeling-btn" onclick="selectFeeling(this,'💪 Strong')">💪 Strong</button>
+            <button class="feeling-btn" onclick="selectFeeling(this,'😤 Pushed Through')">😤 Pushed Through</button>
+            <button class="feeling-btn" onclick="selectFeeling(this,'😴 Tired')">😴 Tired</button>
+            <button class="feeling-btn" onclick="selectFeeling(this,'🔥 On Fire')">🔥 On Fire</button>
+            <button class="feeling-btn" onclick="selectFeeling(this,'😅 Tough Day')">😅 Tough Day</button>
+            <button class="feeling-btn" onclick="selectFeeling(this,'🎯 Focused')">🎯 Focused</button>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Session Notes</label>
+          <textarea class="form-input" id="log-notes" placeholder="Anything to note about this session..."></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="form-group" style="margin-bottom:0.8rem;">
+          <label class="form-label">Progress Photo (optional)</label>
+          <input type="file" id="log-photo" accept="image/*" style="display:none;" onchange="handlePhotoUpload(this)">
+          <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap;">
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('log-photo').click()">📷 Add Photo</button>
+            <span id="photo-name" style="font-size:0.78rem; color:var(--muted); font-weight:600;"></span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-fire" onclick="saveSession()" style="margin-bottom:1rem;">Save Session ✓</button>
+    </div>
+  </div>
+
+  <!-- TAB: PROGRESS -->
+  <div class="content" id="tab-progress" style="display:none;">
+    <div class="section-heading">Progress</div>
+    <div class="section-sub">Track your journey over time</div>
+
+    <div class="stat-grid" id="progress-stats"></div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Body Measurements</div>
+        <button class="btn btn-fire btn-sm" onclick="openMeasModal()">+ Log</button>
+      </div>
+      <div id="measurements-display"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:0.8rem;">Session History</div>
+      <div id="session-history"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:0.8rem;">Progress Photos</div>
+      <div class="photo-grid" id="photo-gallery"></div>
+    </div>
+  </div>
+
+  <!-- TAB: PROFILE -->
+  <div class="content" id="tab-profile" style="display:none;">
+    <div class="section-heading">My Profile</div>
+    <div class="section-sub" id="profile-joined"></div>
+
+    <div class="card" id="profile-card"></div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:0.8rem;">Update Measurements</div>
+      <button class="btn btn-gold" onclick="openMeasModal()">📏 Log New Measurements</button>
+    </div>
+
+    <div class="card" style="border-color:rgba(239,68,68,0.15);">
+      <div class="card-title" style="margin-bottom:0.4rem; color:var(--red);">Danger Zone</div>
+      <div style="font-size:0.8rem; color:var(--muted); font-weight:600; margin-bottom:0.8rem;">Deleting your profile is permanent and cannot be undone.</div>
+      <button class="btn btn-danger btn-sm" onclick="deleteProfile()">Delete My Profile</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-tab active" onclick="switchTab('home')" id="nav-home">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-tab" onclick="switchTab('plans')" id="nav-plans">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">Plans</span>
+    </button>
+    <button class="nav-tab" onclick="switchTab('log')" id="nav-log">
+      <span class="nav-icon">🥊</span>
+      <span class="nav-label">Log</span>
+    </button>
+    <button class="nav-tab" onclick="switchTab('progress')" id="nav-progress">
+      <span class="nav-icon">📈</span>
+      <span class="nav-label">Progress</span>
+    </button>
+    <button class="nav-tab" onclick="switchTab('profile')" id="nav-profile">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">Profile</span>
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ ADMIN ════════════════════════════════════ -->
+<div id="screen-admin" class="screen">
+  <div class="topbar">
+    <div class="topbar-logo">Rise<span>&</span>Strike</div>
+    <div class="topbar-right">
+      <span class="admin-badge" style="margin:0;">⚙️ Admin</span>
+      <button class="icon-btn" onclick="showScreen('splash')">Exit</button>
+    </div>
+  </div>
+
+  <div class="content" style="padding-bottom:2rem;">
+    <!-- ADMIN TABS -->
+    <div style="display:flex; gap:0.6rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+      <button class="btn btn-fire btn-sm" onclick="adminTab('plans')" id="at-plans">📋 Plans</button>
+      <button class="btn btn-ghost btn-sm" onclick="adminTab('clients')" id="at-clients">👥 Clients</button>
+    </div>
+
+    <!-- ADMIN: PLANS -->
+    <div id="admin-plans">
+      <div class="section-heading">Training Plans</div>
+      <div class="section-sub">Build plans for your clients</div>
+
+      <div class="card" style="border-color:rgba(255,77,28,0.2);">
+        <div class="card-title" style="margin-bottom:1rem;">Create New Plan</div>
+        <div class="form-group">
+          <label class="form-label">Plan Name</label>
+          <input class="form-input" id="plan-name" type="text" placeholder="e.g. 6-Week Beginner Boxing">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-input" id="plan-desc" placeholder="What is this plan for?" style="min-height:60px;"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Difficulty</label>
+          <select class="form-input" id="plan-diff">
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.8rem;">
+          <div style="font-size:0.78rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted);">Exercises</div>
+          <button class="btn btn-gold btn-sm" onclick="addExerciseField()">+ Add Exercise</button>
+        </div>
+        <div id="exercise-fields"></div>
+        <button class="btn btn-fire" onclick="savePlan()" style="margin-top:0.5rem;">Save Plan ✓</button>
+      </div>
+
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:0.04em; margin-bottom:0.8rem;">Existing Plans</div>
+      <div id="admin-plans-list"></div>
+    </div>
+
+    <!-- ADMIN: CLIENTS -->
+    <div id="admin-clients" style="display:none;">
+      <div class="section-heading">Clients</div>
+      <div class="section-sub">View all registered clients</div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="form-input search-input" type="text" placeholder="Search clients..." oninput="renderAdminClients(this.value)">
+      </div>
+      <div id="admin-clients-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ MEASUREMENT MODAL ════════════════════════════════════ -->
+<div class="modal-overlay" id="meas-modal">
+  <div class="modal">
+    <div class="modal-title">Log Measurements</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
+      <div class="form-group"><label class="form-label">Weight (kg)</label><input class="form-input" id="m-weight" type="number" placeholder="72"></div>
+      <div class="form-group"><label class="form-label">Body Fat %</label><input class="form-input" id="m-bf" type="number" placeholder="18"></div>
+      <div class="form-group"><label class="form-label">Chest (cm)</label><input class="form-input" id="m-chest" type="number" placeholder="95"></div>
+      <div class="form-group"><label class="form-label">Waist (cm)</label><input class="form-input" id="m-waist" type="number" placeholder="80"></div>
+      <div class="form-group"><label class="form-label">Hips (cm)</label><input class="form-input" id="m-hips" type="number" placeholder="95"></div>
+      <div class="form-group"><label class="form-label">Arms (cm)</label><input class="form-input" id="m-arms" type="number" placeholder="32"></div>
+    </div>
+    <div style="display:flex; gap:0.7rem; margin-top:0.5rem;">
+      <button class="btn btn-fire" onclick="saveMeasurements()">Save</button>
+      <button class="btn btn-ghost" onclick="closeMeasModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ PLAN DETAIL MODAL ════════════════════════════════════ -->
+<div class="modal-overlay" id="plan-modal">
+  <div class="modal">
+    <div id="plan-modal-content"></div>
+    <button class="btn btn-ghost" onclick="closePlanModal()" style="margin-top:1rem;">Close</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ ADMIN LOGIN MODAL ════════════════════════════════════ -->
+<div class="modal-overlay" id="admin-modal">
+  <div class="modal" style="max-width:340px; margin:0 auto;">
+    <div class="modal-title">Trainer Login</div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input class="form-input" id="admin-pass-input" type="password" placeholder="Enter trainer password">
+    </div>
+    <div style="display:flex; gap:0.7rem;">
+      <button class="btn btn-gold" onclick="checkAdminPass()">Login</button>
+      <button class="btn btn-ghost" onclick="closeAdminModal()">Cancel</button>
+    </div>
+    <div style="font-size:0.72rem; color:var(--muted); font-weight:600; margin-top:0.8rem;">Default password: <strong style="color:var(--gold);">riseandstrike</strong></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// DATA LAYER — localStorage
+// ══════════════════════════════════════════════════════════════
+
+const ADMIN_PASS = 'riseandstrike';
+
+function getData(key, fallback = null) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
+}
+function setData(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) { console.warn('Storage error', e); }
+}
+
+function getClients() { return getData('rs_clients', {}); }
+function saveClients(c) { setData('rs_clients', c); }
+function getPlans() { return getData('rs_plans', []); }
+function savePlans(p) { setData('rs_plans', p); }
+function getSessions(clientId) { return getData('rs_sessions_' + clientId, []); }
+function saveSessions(clientId, s) { setData('rs_sessions_' + clientId, s); }
+function getMeasurements(clientId) { return getData('rs_meas_' + clientId, []); }
+function saveMeasurements2(clientId, m) { setData('rs_meas_' + clientId, m); }
+
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
+
+let currentClient = null;
+let selectedFeeling = '';
+let logPhotoData = null;
+
+// ══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + id);
+  if (el) el.classList.add('active');
+}
+
+function switchTab(tab) {
+  ['home','plans','log','progress','profile'].forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    const nav = document.getElementById('nav-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+    if (nav) nav.classList.toggle('active', t === tab);
+  });
+  if (tab === 'home') renderHome();
+  if (tab === 'plans') renderPlans();
+  if (tab === 'log') renderLogTab();
+  if (tab === 'progress') renderProgress();
+  if (tab === 'profile') renderProfile();
+  window.scrollTo(0, 0);
+}
+
+function adminTab(tab) {
+  ['plans','clients'].forEach(t => {
+    const el = document.getElementById('admin-' + t);
+    const btn = document.getElementById('at-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+    if (btn) { btn.className = t === tab ? 'btn btn-fire btn-sm' : 'btn btn-ghost btn-sm'; }
+  });
+  if (tab === 'clients') renderAdminClients('');
+  if (tab === 'plans') renderAdminPlans();
+}
+
+// ══════════════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════════════
+
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  setTimeout(() => { t.className = ''; }, 3000);
+}
+
+// ══════════════════════════════════════════════════════════════
+// ADMIN AUTH
+// ══════════════════════════════════════════════════════════════
+
+function showAdminPrompt() {
+  document.getElementById('admin-pass-input').value = '';
+  document.getElementById('admin-modal').classList.add('open');
+}
+function closeAdminModal() { document.getElementById('admin-modal').classList.remove('open'); }
+function checkAdminPass() {
+  const v = document.getElementById('admin-pass-input').value;
+  if (v === ADMIN_PASS) {
+    closeAdminModal();
+    showScreen('admin');
+    renderAdminPlans();
+    renderExerciseFields();
+  } else {
+    toast('❌ Incorrect password', 'error');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// CLIENT AUTH
+// ══════════════════════════════════════════════════════════════
+
+function clientLogin() {
+  const name = document.getElementById('clientNameInput').value.trim();
+  if (!name) { toast('Enter your name', 'error'); return; }
+  const clients = getClients();
+  const key = name.toLowerCase().replace(/\s+/g, '_');
+  if (clients[key]) {
+    currentClient = { ...clients[key], key };
+    launchClientApp();
+  } else {
+    toast('Profile not found — create one below', 'error');
+    document.getElementById('reg-name').value = name;
+    showScreen('client-register');
+  }
+}
+
+function registerClient() {
+  const name = document.getElementById('reg-name').value.trim();
+  if (!name) { toast('Name is required', 'error'); return; }
+  const key = name.toLowerCase().replace(/\s+/g, '_');
+  const clients = getClients();
+  if (clients[key]) { toast('Profile already exists — login instead', 'error'); return; }
+  clients[key] = {
+    name,
+    age: document.getElementById('reg-age').value || '',
+    height: document.getElementById('reg-height').value || '',
+    weight: document.getElementById('reg-weight').value || '',
+    goal: document.getElementById('reg-goal').value || '',
+    notes: document.getElementById('reg-notes').value || '',
+    joined: new Date().toISOString()
+  };
+  saveClients(clients);
+  currentClient = { ...clients[key], key };
+  toast('✅ Profile created!', 'success');
+  launchClientApp();
+}
+
+function launchClientApp() {
+  document.getElementById('topbar-name').textContent = currentClient.name.split(' ')[0];
+  showScreen('client-app');
+  switchTab('home');
+}
+
+function clientLogout() {
+  currentClient = null;
+  showScreen('splash');
+}
+
+function deleteProfile() {
+  if (!confirm('Delete your profile and all data? This cannot be undone.')) return;
+  const clients = getClients();
+  delete clients[currentClient.key];
+  saveClients(clients);
+  localStorage.removeItem('rs_sessions_' + currentClient.key);
+  localStorage.removeItem('rs_meas_' + currentClient.key);
+  currentClient = null;
+  showScreen('splash');
+  toast('Profile deleted');
+}
+
+// ══════════════════════════════════════════════════════════════
+// HOME TAB
+// ══════════════════════════════════════════════════════════════
+
+function renderHome() {
+  if (!currentClient) return;
+  document.getElementById('home-title').textContent = `Hey ${currentClient.name.split(' ')[0]} 👋`;
+  const sessions = getSessions(currentClient.key);
+  const now = new Date();
+  const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+  const thisWeek = sessions.filter(s => new Date(s.date) >= weekAgo).length;
+  const streak = calcStreak(sessions);
+
+  document.getElementById('home-stats').innerHTML = `
+    <div class="stat-box"><div class="stat-val">${sessions.length}</div><div class="stat-lbl">Total Sessions</div></div>
+    <div class="stat-box"><div class="stat-val gold">${thisWeek}</div><div class="stat-lbl">This Week</div></div>
+    <div class="stat-box"><div class="stat-val">${streak}</div><div class="stat-lbl">Day Streak 🔥</div></div>
+    <div class="stat-box"><div class="stat-val gold">${getPlans().length}</div><div class="stat-lbl">Plans Available</div></div>
+  `;
+
+  const recent = sessions.slice(-3).reverse();
+  const recentEl = document.getElementById('home-recent');
+  if (recent.length === 0) {
+    recentEl.innerHTML = '';
+    return;
+  }
+  recentEl.innerHTML = `<div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.04em;margin-bottom:0.6rem;">Recent Sessions</div>` +
+    recent.map(s => `
+      <div class="history-entry">
+        <div class="history-date">${formatDate(s.date)}</div>
+        <div class="history-title">${s.planName || 'Session'} ${s.feeling ? '<span style="font-size:0.85rem;">' + s.feeling + '</span>' : ''}</div>
+        ${s.notes ? `<div class="history-note">"${s.notes}"</div>` : ''}
+      </div>
+    `).join('');
+}
+
+function calcStreak(sessions) {
+  if (!sessions.length) return 0;
+  const dates = [...new Set(sessions.map(s => s.date.split('T')[0]))].sort().reverse();
+  let streak = 0, prev = null;
+  for (const d of dates) {
+    const cur = new Date(d);
+    if (!prev) { streak = 1; prev = cur; continue; }
+    const diff = (prev - cur) / (1000 * 60 * 60 * 24);
+    if (diff <= 2) { streak++; prev = cur; } else break;
+  }
+  return streak;
+}
+
+// ══════════════════════════════════════════════════════════════
+// PLANS TAB
+// ══════════════════════════════════════════════════════════════
+
+function renderPlans() {
+  const plans = getPlans();
+  const el = document.getElementById('plans-list');
+  if (!plans.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No plans yet — check back after your trainer adds some!</div></div>`;
+    return;
+  }
+  el.innerHTML = plans.map((p, i) => `
+    <div class="list-item" onclick="openPlanDetail(${i})">
+      <div class="list-item-left">
+        <div class="list-item-icon">🥊</div>
+        <div>
+          <div class="list-item-title">${p.name}</div>
+          <div class="list-item-sub">${p.exercises ? p.exercises.length : 0} exercises · <span class="badge badge-${p.difficulty === 'Beginner' ? 'green' : p.difficulty === 'Intermediate' ? 'gold' : 'fire'}" style="font-size:0.65rem;">${p.difficulty}</span></div>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+  `).join('');
+}
+
+function openPlanDetail(idx) {
+  const p = getPlans()[idx];
+  if (!p) return;
+  const modal = document.getElementById('plan-modal');
+  document.getElementById('plan-modal-content').innerHTML = `
+    <div class="modal-title">${p.name}</div>
+    ${p.description ? `<div style="color:rgba(255,255,255,0.6);font-size:0.88rem;font-weight:600;margin-bottom:1rem;">${p.description}</div>` : ''}
+    <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;">
+      <span class="badge badge-${p.difficulty === 'Beginner' ? 'green' : p.difficulty === 'Intermediate' ? 'gold' : 'fire'}">${p.difficulty}</span>
+      <span class="badge badge-muted">${p.exercises ? p.exercises.length : 0} exercises</span>
+    </div>
+    ${(p.exercises || []).map(ex => `
+      <div class="exercise-row">
+        <div class="exercise-name">${ex.name}</div>
+        <div style="display:flex;gap:1rem;font-size:0.8rem;color:var(--muted);font-weight:700;">
+          <span>📊 ${ex.sets} sets</span>
+          <span>🔁 ${ex.reps} reps</span>
+          ${ex.rest ? `<span>⏱ ${ex.rest}s rest</span>` : ''}
+        </div>
+        ${ex.notes ? `<div style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;font-style:italic;">${ex.notes}</div>` : ''}
+      </div>
+    `).join('')}
+    <button class="btn btn-fire" onclick="closePlanModal(); switchTab('log'); setTimeout(()=>{ document.getElementById('log-plan-select').value='${idx}'; loadPlanExercises(); },100);" style="margin-top:1rem;">Log This Plan 🥊</button>
+  `;
+  modal.classList.add('open');
+}
+function closePlanModal() { document.getElementById('plan-modal').classList.remove('open'); }
+
+// ══════════════════════════════════════════════════════════════
+// LOG SESSION TAB
+// ══════════════════════════════════════════════════════════════
+
+function renderLogTab() {
+  const plans = getPlans();
+  const sel = document.getElementById('log-plan-select');
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('log-date').value = today;
+  selectedFeeling = '';
+  logPhotoData = null;
+  document.getElementById('photo-name').textContent = '';
+  document.getElementById('log-notes').value = '';
+  document.querySelectorAll('.feeling-btn').forEach(b => b.classList.remove('selected'));
+
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Select a plan...</option>' +
+    plans.map((p, i) => `<option value="${i}">${p.name}</option>`).join('');
+  if (cur) sel.value = cur;
+
+  if (sel.value) loadPlanExercises();
+  else document.getElementById('log-exercises-section').style.display = 'none';
+}
+
+function loadPlanExercises() {
+  const idx = document.getElementById('log-plan-select').value;
+  const section = document.getElementById('log-exercises-section');
+  if (idx === '') { section.style.display = 'none'; return; }
+  const plan = getPlans()[idx];
+  if (!plan) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  const container = document.getElementById('log-exercises');
+  container.innerHTML = (plan.exercises || []).map((ex, i) => `
+    <div class="exercise-row" id="ex-row-${i}">
+      <div class="exercise-name">${ex.name}</div>
+      <div style="font-size:0.75rem;color:var(--muted);font-weight:700;margin-bottom:0.7rem;">Target: ${ex.sets} sets × ${ex.reps} reps${ex.rest ? ' · ' + ex.rest + 's rest' : ''}</div>
+      ${Array.from({length: parseInt(ex.sets)||3}, (_, s) => `
+        <div style="margin-bottom:0.5rem;">
+          <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;">Set ${s+1}</div>
+          <div class="sets-grid">
+            <div class="set-input-group">
+              <span class="set-label">Reps</span>
+              <input class="set-input" type="number" id="ex${i}_s${s}_reps" placeholder="${ex.reps}">
+            </div>
+            <div class="set-input-group">
+              <span class="set-label">Weight (kg)</span>
+              <input class="set-input" type="number" id="ex${i}_s${s}_weight" placeholder="0">
+            </div>
+            <div class="set-input-group">
+              <span class="set-label">Done</span>
+              <input type="checkbox" id="ex${i}_s${s}_done" style="width:24px;height:24px;margin-top:4px;accent-color:var(--fire);cursor:pointer;">
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function selectFeeling(btn, feeling) {
+  document.querySelectorAll('.feeling-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedFeeling = feeling;
+}
+
+function handlePhotoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    logPhotoData = e.target.result;
+    document.getElementById('photo-name').textContent = '✅ ' + file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveSession() {
+  const idx = document.getElementById('log-plan-select').value;
+  if (idx === '') { toast('Pick a plan first', 'error'); return; }
+  const plan = getPlans()[idx];
+  const date = document.getElementById('log-date').value;
+  const notes = document.getElementById('log-notes').value.trim();
+
+  const exerciseLogs = (plan.exercises || []).map((ex, i) => {
+    const sets = Array.from({length: parseInt(ex.sets)||3}, (_, s) => ({
+      reps: document.getElementById(`ex${i}_s${s}_reps`)?.value || '',
+      weight: document.getElementById(`ex${i}_s${s}_weight`)?.value || '',
+      done: document.getElementById(`ex${i}_s${s}_done`)?.checked || false
+    }));
+    return { name: ex.name, sets };
+  });
+
+  const session = {
+    id: Date.now(),
+    planName: plan.name,
+    date,
+    feeling: selectedFeeling,
+    notes,
+    exercises: exerciseLogs,
+    photo: logPhotoData
+  };
+
+  const sessions = getSessions(currentClient.key);
+  sessions.push(session);
+  saveSessions(currentClient.key, sessions);
+
+  toast('✅ Session saved!', 'success');
+  logPhotoData = null;
+  document.getElementById('log-plan-select').value = '';
+  document.getElementById('log-exercises-section').style.display = 'none';
+  document.getElementById('log-notes').value = '';
+  document.getElementById('photo-name').textContent = '';
+  selectedFeeling = '';
+  document.querySelectorAll('.feeling-btn').forEach(b => b.classList.remove('selected'));
+  setTimeout(() => switchTab('progress'), 800);
+}
+
+// ══════════════════════════════════════════════════════════════
+// PROGRESS TAB
+// ══════════════════════════════════════════════════════════════
+
+function renderProgress() {
+  if (!currentClient) return;
+  const sessions = getSessions(currentClient.key);
+  const meas = getMeasurements(currentClient.key);
+
+  // Stats
+  const thisMonth = sessions.filter(s => {
+    const d = new Date(s.date);
+    const now = new Date();
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+
+  document.getElementById('progress-stats').innerHTML = `
+    <div class="stat-box"><div class="stat-val">${sessions.length}</div><div class="stat-lbl">Total Sessions</div></div>
+    <div class="stat-box"><div class="stat-val gold">${thisMonth}</div><div class="stat-lbl">This Month</div></div>
+    <div class="stat-box"><div class="stat-val">${meas.length}</div><div class="stat-lbl">Measurements</div></div>
+    <div class="stat-box"><div class="stat-val gold">${sessions.filter(s=>s.photo).length}</div><div class="stat-lbl">Photos</div></div>
+  `;
+
+  // Measurements
+  const measEl = document.getElementById('measurements-display');
+  if (!meas.length) {
+    measEl.innerHTML = `<div style="color:var(--muted);font-size:0.82rem;font-weight:600;text-align:center;padding:1rem 0;">No measurements logged yet</div>`;
+  } else {
+    const latest = meas[meas.length - 1];
+    const prev = meas.length > 1 ? meas[meas.length - 2] : null;
+    const fields = [
+      {key:'weight', label:'Weight (kg'}, {key:'bf', label:'Body Fat %'},
+      {key:'chest', label:'Chest (cm)'}, {key:'waist', label:'Waist (cm)'},
+      {key:'hips', label:'Hips (cm)'}, {key:'arms', label:'Arms (cm)'}
+    ];
+    measEl.innerHTML = `<div style="font-size:0.7rem;color:var(--muted);font-weight:700;margin-bottom:0.5rem;">Latest: ${formatDate(latest.date)}</div>` +
+      fields.filter(f => latest[f.key]).map(f => {
+        const val = latest[f.key];
+        const pval = prev ? prev[f.key] : null;
+        let changeHtml = '';
+        if (pval && val !== pval) {
+          const diff = (parseFloat(val) - parseFloat(pval)).toFixed(1);
+          const isGood = (f.key === 'waist' || f.key === 'bf') ? diff < 0 : diff > 0;
+          changeHtml = `<span class="meas-change ${diff > 0 ? 'meas-up' : 'meas-down'}">${diff > 0 ? '+' : ''}${diff}</span>`;
+        }
+        return `<div class="meas-row"><span class="meas-label">${f.label}</span><span class="meas-val">${val}${changeHtml}</span></div>`;
+      }).join('');
+  }
+
+  // Session history
+  const histEl = document.getElementById('session-history');
+  if (!sessions.length) {
+    histEl.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">No sessions logged yet</div></div>`;
+  } else {
+    histEl.innerHTML = sessions.slice().reverse().slice(0, 10).map(s => `
+      <div class="history-entry">
+        <div class="history-date">${formatDate(s.date)}</div>
+        <div class="history-title">${s.planName} ${s.feeling ? '· ' + s.feeling : ''}</div>
+        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.4rem;">
+          ${s.exercises.map(ex => `<span class="badge badge-muted">${ex.name}</span>`).join('')}
+        </div>
+        ${s.notes ? `<div class="history-note">"${s.notes}"</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  // Photos
+  const photoEl = document.getElementById('photo-gallery');
+  const photos = sessions.filter(s => s.photo);
+  if (!photos.length) {
+    photoEl.innerHTML = `<div style="grid-column:span 3;color:var(--muted);font-size:0.82rem;font-weight:600;text-align:center;padding:1rem 0;">No photos yet</div>`;
+  } else {
+    photoEl.innerHTML = photos.slice(-9).reverse().map(s => `
+      <img class="photo-thumb" src="${s.photo}" alt="Progress photo" onclick="window.open('${s.photo}','_blank')" title="${formatDate(s.date)}">
+    `).join('');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// PROFILE TAB
+// ══════════════════════════════════════════════════════════════
+
+function renderProfile() {
+  if (!currentClient) return;
+  document.getElementById('profile-joined').textContent = 'Member since ' + formatDate(currentClient.joined);
+  document.getElementById('profile-card').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:0.7rem;">
+      ${row('Name', currentClient.name)}
+      ${currentClient.age ? row('Age', currentClient.age) : ''}
+      ${currentClient.height ? row('Height', currentClient.height + ' cm') : ''}
+      ${currentClient.weight ? row('Starting Weight', currentClient.weight + ' kg') : ''}
+      ${currentClient.goal ? row('Goal', currentClient.goal) : ''}
+      ${currentClient.notes ? row('Notes', currentClient.notes) : ''}
+    </div>
+  `;
+}
+
+function row(label, val) {
+  return `<div class="meas-row"><span class="meas-label">${label}</span><span style="font-weight:700;font-size:0.88rem;">${val}</span></div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// MEASUREMENTS MODAL
+// ══════════════════════════════════════════════════════════════
+
+function openMeasModal() { document.getElementById('meas-modal').classList.add('open'); }
+function closeMeasModal() { document.getElementById('meas-modal').classList.remove('open'); }
+
+function saveMeasurements() {
+  const entry = {
+    date: new Date().toISOString(),
+    weight: document.getElementById('m-weight').value,
+    bf: document.getElementById('m-bf').value,
+    chest: document.getElementById('m-chest').value,
+    waist: document.getElementById('m-waist').value,
+    hips: document.getElementById('m-hips').value,
+    arms: document.getElementById('m-arms').value
+  };
+  const meas = getMeasurements(currentClient.key);
+  meas.push(entry);
+  saveMeasurements2(currentClient.key, meas);
+  closeMeasModal();
+  toast('✅ Measurements saved!', 'success');
+  ['m-weight','m-bf','m-chest','m-waist','m-hips','m-arms'].forEach(id => document.getElementById(id).value = '');
+  renderProgress();
+}
+
+// ══════════════════════════════════════════════════════════════
+// ADMIN — PLANS
+// ══════════════════════════════════════════════════════════════
+
+let exerciseCount = 0;
+
+function renderExerciseFields() {
+  if (exerciseCount === 0) addExerciseField();
+}
+
+function addExerciseField() {
+  exerciseCount++;
+  const id = exerciseCount;
+  const container = document.getElementById('exercise-fields');
+  const div = document.createElement('div');
+  div.id = 'ef-' + id;
+  div.style.cssText = 'background:var(--card2);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:1rem;margin-bottom:0.7rem;';
+  div.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.7rem;">
+      <span style="font-size:0.75rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);">Exercise ${id}</span>
+      <button class="btn btn-danger btn-sm" onclick="removeExercise(${id})">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Exercise Name</label><input class="form-input" id="ef${id}-name" type="text" placeholder="e.g. Jab-Cross Combo"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.6rem;">
+      <div class="form-group"><label class="form-label">Sets</label><input class="form-input" id="ef${id}-sets" type="number" placeholder="3"></div>
+      <div class="form-group"><label class="form-label">Reps</label><input class="form-input" id="ef${id}-reps" type="text" placeholder="10"></div>
+      <div class="form-group"><label class="form-label">Rest (s)</label><input class="form-input" id="ef${id}-rest" type="number" placeholder="60"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:0;"><label class="form-label">Notes (optional)</label><input class="form-input" id="ef${id}-notes" type="text" placeholder="e.g. keep elbows tight"></div>
+  `;
+  container.appendChild(div);
+}
+
+function removeExercise(id) {
+  const el = document.getElementById('ef-' + id);
+  if (el) el.remove();
+}
+
+function savePlan() {
+  const name = document.getElementById('plan-name').value.trim();
+  if (!name) { toast('Plan name is required', 'error'); return; }
+
+  const exercises = [];
+  document.querySelectorAll('[id^="ef"][id$="-name"]').forEach(input => {
+    const id = input.id.replace('ef','').replace('-name','');
+    const exName = input.value.trim();
+    if (!exName) return;
+    exercises.push({
+      name: exName,
+      sets: document.getElementById(`ef${id}-sets`)?.value || '3',
+      reps: document.getElementById(`ef${id}-reps`)?.value || '10',
+      rest: document.getElementById(`ef${id}-rest`)?.value || '',
+      notes: document.getElementById(`ef${id}-notes`)?.value || ''
+    });
+  });
+
+  if (!exercises.length) { toast('Add at least one exercise', 'error'); return; }
+
+  const plans = getPlans();
+  plans.push({
+    name,
+    description: document.getElementById('plan-desc').value.trim(),
+    difficulty: document.getElementById('plan-diff').value,
+    exercises,
+    created: new Date().toISOString()
+  });
+  savePlans(plans);
+  toast('✅ Plan saved!', 'success');
+
+  // Reset form
+  document.getElementById('plan-name').value = '';
+  document.getElementById('plan-desc').value = '';
+  document.getElementById('exercise-fields').innerHTML = '';
+  exerciseCount = 0;
+  addExerciseField();
+  renderAdminPlans();
+}
+
+function renderAdminPlans() {
+  const plans = getPlans();
+  const el = document.getElementById('admin-plans-list');
+  if (!plans.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No plans yet. Create one above.</div></div>`;
+    return;
+  }
+  el.innerHTML = plans.map((p, i) => `
+    <div class="card" style="margin-bottom:0.8rem;">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${p.name}</div>
+          <div class="card-sub">${p.exercises.length} exercises · ${p.difficulty}</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="deletePlan(${i})">Delete</button>
+      </div>
+      ${p.description ? `<div style="font-size:0.82rem;color:rgba(255,255,255,0.5);font-weight:600;">${p.description}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function deletePlan(idx) {
+  if (!confirm('Delete this plan?')) return;
+  const plans = getPlans();
+  plans.splice(idx, 1);
+  savePlans(plans);
+  renderAdminPlans();
+  toast('Plan deleted');
+}
+
+// ══════════════════════════════════════════════════════════════
+// ADMIN — CLIENTS
+// ══════════════════════════════════════════════════════════════
+
+function renderAdminClients(search = '') {
+  const clients = getClients();
+  const el = document.getElementById('admin-clients-list');
+  const keys = Object.keys(clients).filter(k =>
+    !search || clients[k].name.toLowerCase().includes(search.toLowerCase())
+  );
+  if (!keys.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">No clients registered yet</div></div>`;
+    return;
+  }
+  el.innerHTML = keys.map(k => {
+    const c = clients[k];
+    const sessions = getSessions(k);
+    return `
+      <div class="card" style="margin-bottom:0.8rem;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">${c.name}</div>
+            <div class="card-sub">${sessions.length} sessions · Joined ${formatDate(c.joined)}</div>
+          </div>
+          <span class="badge badge-fire">${c.goal || 'No goal set'}</span>
+        </div>
+        ${c.notes ? `<div style="font-size:0.8rem;color:var(--muted);font-weight:600;margin-top:0.3rem;">📝 ${c.notes}</div>` : ''}
+        <div style="margin-top:0.8rem;font-size:0.78rem;color:var(--muted);font-weight:700;">
+          ${c.height ? `Height: ${c.height}cm` : ''} ${c.weight ? `· Starting weight: ${c.weight}kg` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════════
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// Init
+document.getElementById('log-date') && (document.getElementById('log-date').value = new Date().toISOString().split('T')[0]);
+renderExerciseFields();
+</script>
+</body>
+</html>
