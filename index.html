@@ -1182,8 +1182,13 @@
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-  }, { threshold: 0.15 });
+  }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
   reveals.forEach(r => observer.observe(r));
+
+  // Fallback: reveal everything if observer doesn't fire within 2s
+  setTimeout(() => {
+    document.querySelectorAll('.reveal:not(.visible)').forEach(el => el.classList.add('visible'));
+  }, 2000);
 
   // Contact form — Formspree async submission
   const form = document.getElementById('contactForm');
