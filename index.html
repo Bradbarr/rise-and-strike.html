@@ -851,7 +851,7 @@
     </p>
     <div class="hero-ctas">
       <a href="#contact" class="btn-primary">Book a Session 🥊</a>
-      <a href="https://bradbarr.github.io/rise-and-strike-app.html" class="btn-ghost" target="_blank">📱 Client App</a>
+      <a href="https://bradbarr.github.io/rise-and-strike.html/rise-and-strike-app.html" class="btn-ghost" target="_blank">📱 Client App</a>
       <a href="#services" class="btn-ghost">See What We Do</a>
     </div>
     <div class="hero-stats">
@@ -1129,7 +1129,7 @@
       <p class="sub reveal reveal-delay-2">Drop us a message and we'll get back to you within 24 hours to discuss your goals and get you booked in. First session is all about you.</p>
       <div class="contact-chips reveal reveal-delay-2">
         <a href="tel:+44" class="contact-chip"><span>📞</span> Call Us</a>
-        <a href="mailto:Rise.and.Strike@proton.me" class="contact-chip"><span>✉️</span> Rise.and.Strike@proton.me</a>
+        <a href="/cdn-cgi/l/email-protection#c092a9b3a5eea1aea4ee93b4b2a9aba580b0b2afb4afaeeeada5" class="contact-chip"><span>✉️</span> <span class="__cf_email__" data-cfemail="085a617b6d2669666c265b7c7a61636d48787a677c676626656d">[email&#160;protected]</span></a>
         <a href="#" class="contact-chip"><span>📍</span> South Wales</a>
       </div>
       <div class="contact-area reveal reveal-delay-3">
@@ -1145,7 +1145,7 @@
             ✅ Message sent! We'll be in touch within 24 hours.
           </div>
           <div id="formError" style="display:none; margin-top:1rem; padding:1rem; background:rgba(255,77,28,0.1); border:1px solid rgba(255,77,28,0.3); border-radius:10px; text-align:center; font-weight:800; color:var(--fire);">
-            ❌ Something went wrong. Please email us directly at Rise.and.Strike@proton.me
+            ❌ Something went wrong. Please email us directly at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="54063d27317a353a307a0720263d3f311424263b203b3a7a3931">[email&#160;protected]</a>
           </div>
         </form>
       </div>
@@ -1160,7 +1160,7 @@
   <p>NASM Level 4 CPT · CES · WLS</p>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -1213,19 +1213,4 @@
         } else {
           const data = await res.json();
           if (data && data.errors) {
-            errorMsg.textContent = '❌ ' + data.errors.map(err => err.message).join(', ');
-          }
-          errorMsg.style.display = 'block';
-          btn.textContent = 'Send Message 🥊';
-          btn.disabled = false;
-        }
-      } catch (err) {
-        errorMsg.style.display = 'block';
-        btn.textContent = 'Send Message 🥊';
-        btn.disabled = false;
-      }
-    });
-  }
-</script>
-</body>
-</html>
+            errorMsg.textContent = '❌ ' +
