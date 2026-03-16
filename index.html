@@ -101,7 +101,6 @@
       var(--dark);
   }
 
-  /* Animated ring graphic */
   .ring-graphic {
     position: absolute;
     right: -80px; top: 50%;
@@ -247,7 +246,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Scroll indicator */
   .scroll-hint {
     position: absolute; bottom: 2rem; left: 50%;
     transform: translateX(-50%);
@@ -363,7 +361,7 @@
     font-weight: 600;
   }
 
-  /* APPROACH / SERVICES */
+  /* SERVICES */
   #services { background: var(--dark); }
 
   .services-intro {
@@ -537,7 +535,7 @@
     line-height: 1.5;
   }
 
-  /* PROJECTS / APPROACH */
+  /* APPROACH */
   #projects { background: var(--dark); }
 
   .approach-header { max-width: 600px; margin-bottom: 3.5rem; }
@@ -737,6 +735,10 @@
   .contact-area .send-btn:hover {
     opacity: 0.9;
     transform: translateY(-2px);
+  }
+  .contact-area .send-btn:disabled {
+    opacity: 0.6;
+    transform: none;
   }
 
   /* FOOTER */
@@ -1182,20 +1184,47 @@
   }, { threshold: 0.15 });
   reveals.forEach(r => observer.observe(r));
 
-  // Contact form
+  // Contact form — Formspree async submission
   const form = document.getElementById('contactForm');
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
+      const successMsg = document.getElementById('formSuccess');
+      const errorMsg = document.getElementById('formError');
+
       btn.textContent = 'Sending...';
       btn.disabled = true;
+      successMsg.style.display = 'none';
+      errorMsg.style.display = 'none';
+
       try {
         const res = await fetch(form.action, {
           method: 'POST',
           body: new FormData(form),
           headers: { 'Accept': 'application/json' }
         });
+
         if (res.ok) {
-          document.getElementById('formSuccess').style.display = 'block';
-          document
+          successMsg.style.display = 'block';
+          form.reset();
+          btn.textContent = 'Message Sent ✓';
+        } else {
+          const data = await res.json();
+          if (data && data.errors) {
+            errorMsg.textContent = '❌ ' + data.errors.map(err => err.message).join(', ');
+          }
+          errorMsg.style.display = 'block';
+          btn.textContent = 'Send Message 🥊';
+          btn.disabled = false;
+        }
+      } catch (err) {
+        errorMsg.style.display = 'block';
+        btn.textContent = 'Send Message 🥊';
+        btn.disabled = false;
+      }
+    });
+  }
+</script>
+</body>
+</html>
