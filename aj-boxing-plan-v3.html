@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rise & Strike Training Plan – AJ</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #FF6B1A;
+    --gold: #FFB800;
+    --dark: #0B0B0B;
+    --card: #141414;
+    --card2: #1c1c1c;
+    --border: #242424;
+    --text: #E0E0E0;
+    --muted: #666;
+    --corr: #b07ef8;
+    --green: #3ecf8e;
+    --blue: #5aabf0;
+    --pink: #f06ba0;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--dark); color:var(--text); font-family:'Barlow',sans-serif; }
+
+  .hero {
+    padding: 32px 18px 24px;
+    background: linear-gradient(150deg, #110500 0%, #0B0B0B 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-label {
+    font-family:'Barlow Condensed',sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 4px; color: var(--orange);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .hero-top { display:flex; align-items:baseline; gap:10px; margin-bottom:4px; }
+  .hero h1 {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:900; font-size:38px; line-height:1;
+    text-transform:uppercase; color:#fff; letter-spacing:-0.5px;
+  }
+  .hero-name {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700; font-size:16px; color:var(--muted);
+    text-transform:uppercase; letter-spacing:2px;
+    align-self:flex-end; padding-bottom:3px;
+  }
+  .hero-pills { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .pill {
+    font-size:10px; font-weight:600; letter-spacing:0.8px;
+    text-transform:uppercase; padding:4px 10px;
+    border-radius:20px; border:1px solid var(--border);
+    color:var(--muted); background:var(--card2);
+  }
+  .pill.o { color:var(--orange); border-color:rgba(255,107,26,0.3); }
+  .pill.c { color:var(--corr); border-color:rgba(176,126,248,0.3); }
+
+  .ucs-strip {
+    margin: 14px 14px 0;
+    background: rgba(176,126,248,0.07);
+    border: 1px solid rgba(176,126,248,0.2);
+    border-radius: 10px; padding: 12px 14px;
+  }
+  .ucs-strip h3 {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:800; font-size:12px; letter-spacing:2.5px;
+    text-transform:uppercase; color:var(--corr); margin-bottom:8px;
+  }
+  .ucs-cols { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .ucs-col-head { font-size:9.5px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+  .tight-head { color:#f87171; }
+  .weak-head { color:var(--green); }
+  .ucs-col p { font-size:11.5px; color:#aaa; line-height:1.7; }
+
+  .prog-box {
+    margin: 14px 14px 0;
+    background: rgba(255,184,0,0.05);
+    border: 1px solid rgba(255,184,0,0.18);
+    border-radius: 10px; padding: 12px 14px;
+  }
+  .prog-box h3 {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:800; font-size:12px; letter-spacing:2.5px;
+    text-transform:uppercase; color:var(--gold); margin-bottom:8px;
+  }
+  .prog-box p { font-size:12.5px; color:#bbb; line-height:1.65; }
+  .prog-box p + p { margin-top:6px; }
+  .prog-box strong { color:var(--gold); font-weight:600; }
+
+  .shoulder-note {
+    margin: 14px 14px 0;
+    background: rgba(248,113,113,0.05);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 10px; padding: 10px 14px;
+    font-size: 12px; color: #bbb; line-height: 1.6;
+  }
+  .shoulder-note strong { color:#f87171; font-weight:600; }
+
+  .tabs {
+    display:flex; gap:0; margin:18px 14px 0;
+    border-radius:10px; overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .tab {
+    flex:1; padding:11px 6px; text-align:center;
+    cursor:pointer; background:var(--card2);
+    border-right:1px solid var(--border);
+    transition:background 0.15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .tab:last-child { border-right:none; }
+  .tab.active { background:var(--orange); }
+  .tab-num {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:900; font-size:16px; color:#fff;
+    display:block; line-height:1; text-transform:uppercase;
+  }
+  .tab-sub {
+    font-size:9px; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.5px; color:rgba(255,255,255,0.5);
+    display:block; margin-top:2px;
+  }
+  .tab.active .tab-sub { color:rgba(255,255,255,0.75); }
+
+  .panel { display:none; padding-bottom:16px; }
+  .panel.active { display:block; }
+
+  .sec-head {
+    display:flex; align-items:center; gap:10px;
+    padding:18px 14px 8px;
+  }
+  .sec-head-line { flex:1; height:1px; background:var(--border); }
+  .sec-title {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:800; font-size:12px; letter-spacing:2.5px;
+    text-transform:uppercase; white-space:nowrap;
+  }
+  .sec-title.orange { color:var(--orange); }
+  .sec-title.corr { color:var(--corr); }
+  .sec-title.green { color:var(--green); }
+  .sec-title.gold { color:var(--gold); }
+  .sec-time { font-size:10px; color:var(--muted); font-weight:500; white-space:nowrap; }
+
+  .ex-list { padding:0 14px; display:flex; flex-direction:column; gap:7px; }
+
+  .ex {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .ex.open { border-color:rgba(255,107,26,0.3); }
+  .ex.corr.open { border-color:rgba(176,126,248,0.3); }
+
+  .ex-row { display:flex; align-items:center; padding:11px 13px; gap:10px; }
+  .ex-icon { font-size:16px; flex-shrink:0; width:28px; text-align:center; }
+  .ex-main { flex:1; min-width:0; }
+  .ex-name {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700; font-size:15px;
+    text-transform:uppercase; color:#fff; line-height:1;
+  }
+  .ex-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:5px; }
+  .tag {
+    font-size:9px; font-weight:700; letter-spacing:0.6px;
+    text-transform:uppercase; padding:2px 6px;
+    border-radius:3px; border:1px solid;
+  }
+  .t-o { color:var(--orange); border-color:rgba(255,107,26,0.3); background:rgba(255,107,26,0.07); }
+  .t-g { color:var(--gold); border-color:rgba(255,184,0,0.3); background:rgba(255,184,0,0.07); }
+  .t-c { color:var(--corr); border-color:rgba(176,126,248,0.3); background:rgba(176,126,248,0.07); }
+  .t-gr { color:var(--green); border-color:rgba(62,207,142,0.3); background:rgba(62,207,142,0.07); }
+  .t-b { color:var(--blue); border-color:rgba(90,171,240,0.3); background:rgba(90,171,240,0.07); }
+  .t-p { color:var(--pink); border-color:rgba(240,107,160,0.3); background:rgba(240,107,160,0.07); }
+
+  .ex-sets {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:800; font-size:16px; color:var(--orange);
+    white-space:nowrap; flex-shrink:0;
+  }
+  .ex.corr .ex-sets { color:var(--corr); }
+
+  .ex-body { max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
+  .ex.open .ex-body { max-height:220px; }
+
+  .ex-detail {
+    padding:10px 13px 12px;
+    border-top:1px solid var(--border);
+    font-size:12.5px; color:#aaa; line-height:1.65;
+  }
+  .ex-detail .cue {
+    margin-top:7px; color:var(--gold);
+    font-size:11.5px; font-weight:500;
+  }
+
+  .circuit {
+    margin:0 14px;
+    background:rgba(255,107,26,0.05);
+    border:1px solid rgba(255,107,26,0.25);
+    border-radius:10px; overflow:hidden;
+  }
+  .circ-head {
+    padding:12px 14px;
+    display:flex; align-items:baseline; justify-content:space-between;
+  }
+  .circ-title {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:800; font-size:15px; text-transform:uppercase; color:#fff;
+  }
+  .circ-meta { font-size:10.5px; color:var(--orange); font-weight:600; }
+  .circ-items { border-top:1px solid var(--border); }
+  .circ-item {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 14px; border-bottom:1px solid var(--border); gap:10px;
+  }
+  .circ-item:last-child { border-bottom:none; }
+  .circ-item-name {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700; font-size:14px; text-transform:uppercase; color:#ddd;
+  }
+  .circ-item-val {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700; font-size:13px; color:var(--gold); white-space:nowrap;
+  }
+
+  .footer {
+    margin:20px 14px 28px; text-align:center;
+    padding:16px; border:1px solid var(--border);
+    border-radius:10px; background:var(--card);
+  }
+  .footer-brand {
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:900; font-size:18px; letter-spacing:3px;
+    text-transform:uppercase; color:#fff;
+  }
+  .footer-brand span { color:var(--orange); }
+  .footer-coach { font-size:11px; color:var(--muted); margin-top:4px; }
+  .footer-coach strong { color:var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="brand-label">Rise &amp; Strike</div>
+  <div class="hero-top">
+    <h1>Training Plan</h1>
+    <span class="hero-name">— AJ</span>
+  </div>
+  <div class="hero-pills">
+    <span class="pill o">3 Days / Week</span>
+    <span class="pill o">6 Weeks</span>
+    <span class="pill c">UCS Correction</span>
+    <span class="pill">Dumbbells + Bench</span>
+    <span class="pill">Boxing Performance</span>
+  </div>
+</div>
+
+<div class="ucs-strip">
+  <h3>⚠ Upper Cross Syndrome — Postural Priority</h3>
+  <div class="ucs-cols">
+    <div class="ucs-col">
+      <div class="ucs-col-head tight-head">Tight — Needs Release</div>
+      <p>Pecs · Upper Traps · Levator Scap · Suboccipitals</p>
+    </div>
+    <div class="ucs-col">
+      <div class="ucs-col-head weak-head">Weak — Needs Work</div>
+      <p>Deep Neck Flexors · Lower Traps · Rhomboids · Serratus</p>
+    </div>
+  </div>
+</div>
+
+<div class="shoulder-note">
+  <strong>Solo Training Rule:</strong> Neutral grip on all pressing. Retract shoulder blades before every rep. Every exercise in this plan is chosen to be safe if form isn't perfect — no heavy overhead loading, no wide-grip pressing. If shoulder pain increases, skip the pressing and double the rows.
+</div>
+
+<div class="prog-box">
+  <h3>📈 6-Week Progression</h3>
+  <p><strong>Weeks 1–2:</strong> 3 sets. Moderate weight, perfect form. Rest 90s.</p>
+  <p><strong>Weeks 3–4:</strong> Add a 4th set. Increase weight by 2.5–5kg where form is solid. Rest 75s.</p>
+  <p><strong>Weeks 5–6:</strong> Increase load again or add 1–2 reps per set. Rest 60s. Add a 4th round to circuits.</p>
+  <p>Never increase both weight and volume in the same week. Shoulder sore — keep weight the same, add reps only.</p>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchDay(0)">
+    <span class="tab-num">Day 1</span>
+    <span class="tab-sub">Upper + Posture</span>
+  </div>
+  <div class="tab" onclick="switchDay(1)">
+    <span class="tab-num">Day 2</span>
+    <span class="tab-sub">Lower + Agility</span>
+  </div>
+  <div class="tab" onclick="switchDay(2)">
+    <span class="tab-num">Day 3</span>
+    <span class="tab-sub">Full Body + Power</span>
+  </div>
+</div>
+
+<!-- ===== DAY 1 ===== -->
+<div class="panel active" id="p0">
+
+  <div class="sec-head">
+    <span class="sec-title corr">Correctives</span>
+    <span class="sec-time">8 min · Every Session</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="ex-list">
+
+    <div class="ex corr" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🎯</div>
+        <div class="ex-main">
+          <div class="ex-name">Chin Tucks</div>
+          <div class="ex-tags"><span class="tag t-c">Forward Head</span><span class="tag t-c">Headaches</span></div>
+        </div>
+        <div class="ex-sets">3 × 15</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Draw chin straight back — not down. Hold 3 seconds. Eyes level throughout. Do this before every session, every day without exception.
+      </div></div>
+    </div>
+
+    <div class="ex corr" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🧵</div>
+        <div class="ex-main">
+          <div class="ex-name">Thread the Needle</div>
+          <div class="ex-tags"><span class="tag t-c">Thoracic Mob</span><span class="tag t-c">Rotation</span></div>
+        </div>
+        <div class="ex-sets">2 × 8 each</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        On all fours. Slide one arm under your body along the floor, rotating your upper back until that shoulder touches the mat. Hold 2 seconds, feel the thoracic stretch. Return and repeat. Hips stay square throughout.
+        <div class="cue">↳ This is purely thoracic — hips don't move, no shoulder load.</div>
+      </div></div>
+    </div>
+
+    <div class="ex corr" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🪽</div>
+        <div class="ex-main">
+          <div class="ex-name">Wall Angels</div>
+          <div class="ex-tags"><span class="tag t-c">Lower Trap</span><span class="tag t-c">Serratus</span></div>
+        </div>
+        <div class="ex-sets">3 × 12</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Full back, head, and arms flat against the wall. Goalpost arms. Slide up overhead keeping everything in contact. Slow tempo — if the back peels away, work within your current range.
+      </div></div>
+    </div>
+
+    <div class="ex corr" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🔁</div>
+        <div class="ex-main">
+          <div class="ex-name">Prone Y-T-W</div>
+          <div class="ex-tags"><span class="tag t-c">Lower Trap</span><span class="tag t-c">Rhomboids</span></div>
+        </div>
+        <div class="ex-sets">3 × 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Face down on bench. Very light dumbbells (2–4kg max). Thumbs up. Y = diagonal overhead. T = straight out to sides. W = elbows bent 90°, forearms rotate upward.
+        <div class="cue">↳ Burning in mid-back = right. Burning in neck = too heavy, reduce load.</div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-title orange">Upper Body</span>
+    <span class="sec-time">25 min · 2:1 Pull / Push</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="ex-list">
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🏋️</div>
+        <div class="ex-main">
+          <div class="ex-name">Chest-Supported DB Row</div>
+          <div class="ex-tags"><span class="tag t-b">Back · Pull</span><span class="tag t-c">Rhomboids</span></div>
+        </div>
+        <div class="ex-sets">3–4 × 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Face down on incline bench. Retract shoulder blades first — then row. Squeeze 1 second at top. 3-count lower. Chest supported means zero lower back or shoulder compensation risk.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">💪</div>
+        <div class="ex-main">
+          <div class="ex-name">Single Arm DB Row</div>
+          <div class="ex-tags"><span class="tag t-b">Lat · Back</span><span class="tag t-gr">Core</span></div>
+        </div>
+        <div class="ex-sets">3–4 × 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Knee and hand on bench. Elbow drives back to hip — not wide. No rotation. Squeeze hard at top. Elbow to back pocket, not shoulder height.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🛏️</div>
+        <div class="ex-main">
+          <div class="ex-name">DB Floor Press — Neutral Grip</div>
+          <div class="ex-tags"><span class="tag t-b">Chest · Tricep</span><span class="tag t-o">Shoulder-Safe</span></div>
+        </div>
+        <div class="ex-sets">3–4 × 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Lie on the floor, knees bent, DBs in neutral grip. Lower until elbows touch the floor — this is the natural stop point and prevents any shoulder over-extension. Press back up. Elbows 45° from torso.
+        <div class="cue">↳ The floor acts as a built-in depth limiter. Even if form slips, shoulders stay safe.</div>
+      </div></div>
+    </div>
+
+    <div class="ex corr" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🔄</div>
+        <div class="ex-main">
+          <div class="ex-name">Lying DB External Rotation</div>
+          <div class="ex-tags"><span class="tag t-c">Rotator Cuff</span><span class="tag t-c">Shoulder Health</span></div>
+        </div>
+        <div class="ex-sets">3 × 15</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Lie on side. Elbow pinned to ribs, bent 90°. Rotate forearm upward. Very light — 2–5kg only. Elbow must not lift away from body.
+        <div class="cue">↳ Critical for boxing shoulder longevity. Never skip this.</div>
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🦾</div>
+        <div class="ex-main">
+          <div class="ex-name">Lateral Raise</div>
+          <div class="ex-tags"><span class="tag t-b">Mid Delt</span></div>
+        </div>
+        <div class="ex-sets">3 × 12</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Thumbs slightly up. Raise to shoulder height only — no higher. 3-count lower. Shoulders stay depressed throughout — no shrugging to assist.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">💪</div>
+        <div class="ex-main">
+          <div class="ex-name">Hammer Curl</div>
+          <div class="ex-tags"><span class="tag t-b">Bicep · Brachialis</span></div>
+        </div>
+        <div class="ex-sets">3 × 12</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Neutral grip, elbows pinned to sides. Full extension at the bottom. Slow lower on every rep.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🔧</div>
+        <div class="ex-main">
+          <div class="ex-name">Tricep Kickback</div>
+          <div class="ex-tags"><span class="tag t-b">Tricep</span><span class="tag t-o">Punch Extension</span></div>
+        </div>
+        <div class="ex-sets">3 × 12</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Hinged forward, elbow locked back at 90° and pinned to the side. Extend forearm straight back. Squeeze at full extension. No shoulder involvement — pure tricep isolation.
+        <div class="cue">↳ Upper arm stays completely still. Only the forearm moves.</div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-title green">Stretch &amp; Release</span>
+    <span class="sec-time">7 min</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="ex-list">
+
+    <div class="ex corr" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🚪</div>
+        <div class="ex-main">
+          <div class="ex-name">Corner Pec Stretch</div>
+          <div class="ex-tags"><span class="tag t-c">Pec Major + Minor</span><span class="tag t-c">Do Daily</span></div>
+        </div>
+        <div class="ex-sets">2 × 45s</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Arms on doorframe at 90°. Step through and gently lean chest forward. Chin tuck while holding. Most important daily habit in this programme.
+      </div></div>
+    </div>
+
+    <div class="ex corr" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">😮‍💨</div>
+        <div class="ex-main">
+          <div class="ex-name">Upper Trap + Levator Stretch</div>
+          <div class="ex-tags"><span class="tag t-c">Headache Relief</span></div>
+        </div>
+        <div class="ex-sets">30s each</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Ear to shoulder for upper trap. Nose angled toward armpit for levator scapulae. Hand rests gently on skull — no pulling. Both sides.
+      </div></div>
+    </div>
+
+    <div class="ex corr" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">💆</div>
+        <div class="ex-main">
+          <div class="ex-name">Suboccipital Release</div>
+          <div class="ex-tags"><span class="tag t-c">Headache Root</span><span class="tag t-c">Do Daily</span></div>
+        </div>
+        <div class="ex-sets">60s</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Lie on back, chin tucked. Fingertips at base of skull, very light upward pressure. Eyes closed, breathe slowly.
+        <div class="cue">↳ Done daily, this is the single biggest headache reducer in the plan.</div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== DAY 2 ===== -->
+<div class="panel" id="p1">
+
+  <div class="sec-head">
+    <span class="sec-title corr">Correctives</span>
+    <span class="sec-time">5 min</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="ex-list">
+    <div class="ex corr" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🎯</div>
+        <div class="ex-main">
+          <div class="ex-name">Chin Tucks + Thoracic Rotation</div>
+          <div class="ex-tags"><span class="tag t-c">Daily Habit</span></div>
+        </div>
+        <div class="ex-sets">12 + 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Chin tucks first — 12 reps, 3s hold. Then seated thoracic rotation — arms crossed, rotate left and right through full comfortable range. 10 each side, slow and controlled.
+      </div></div>
+    </div>
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-title orange">Warm-Up</span>
+    <span class="sec-time">5 min</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="ex-list">
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🦵</div>
+        <div class="ex-main">
+          <div class="ex-name">Leg Swings + Hip Circles + Glute Bridge</div>
+          <div class="ex-tags"><span class="tag t-p">Hip Mob</span><span class="tag t-p">Glute Activation</span></div>
+        </div>
+        <div class="ex-sets">10 / 10 / 15</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Leg swings forward/back and side-to-side, 10 each direction, each leg. Hip circles on the spot, 10 each way. Glute bridge — drive heels down, 2s hold at top.
+      </div></div>
+    </div>
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-title orange">Lower Body</span>
+    <span class="sec-time">22 min</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="ex-list">
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🏋️</div>
+        <div class="ex-main">
+          <div class="ex-name">Goblet Squat</div>
+          <div class="ex-tags"><span class="tag t-p">Quads · Glutes</span><span class="tag t-gr">Core</span></div>
+        </div>
+        <div class="ex-sets">3–4 × 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        DB at chest, elbows inside knees. Deep squat — thighs parallel or below. Chest tall throughout. Drives upright boxing stance.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🍖</div>
+        <div class="ex-main">
+          <div class="ex-name">Romanian Deadlift</div>
+          <div class="ex-tags"><span class="tag t-p">Hamstrings · Glutes</span><span class="tag t-o">Punch Power</span></div>
+        </div>
+        <div class="ex-sets">3–4 × 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Hips back, back flat. Lower to mid-shin. Drive hips forward to stand. Squeeze glutes hard at top. Stronger hips = harder shots.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🦿</div>
+        <div class="ex-main">
+          <div class="ex-name">Bulgarian Split Squat</div>
+          <div class="ex-tags"><span class="tag t-p">Quads · Glutes</span><span class="tag t-o">Footwork Power</span></div>
+        </div>
+        <div class="ex-sets">3 × 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Rear foot on bench. Straight down — torso upright. Drive through front heel. Both legs.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">↔️</div>
+        <div class="ex-main">
+          <div class="ex-name">Lateral Lunge</div>
+          <div class="ex-tags"><span class="tag t-p">Adductors</span><span class="tag t-o">Ring Movement</span></div>
+        </div>
+        <div class="ex-sets">3 × 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Wide step to the side, bend working knee, opposite leg straight, foot flat. Push back to standing. DB held at chest.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🌉</div>
+        <div class="ex-main">
+          <div class="ex-name">Single Leg Glute Bridge</div>
+          <div class="ex-tags"><span class="tag t-p">Glutes</span><span class="tag t-gr">Stability</span></div>
+        </div>
+        <div class="ex-sets">3 × 12</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        One foot flat, other leg extended. Drive heel down. Hips level throughout. 2s squeeze at top.
+      </div></div>
+    </div>
+
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-title gold">Conditioning Circuit</span>
+    <span class="sec-time">3 rounds · 40s on / 15s off</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="circuit">
+    <div class="circ-head">
+      <span class="circ-title">Footwork Finisher</span>
+      <span class="circ-meta">60s rest between rounds</span>
+    </div>
+    <div class="circ-items">
+      <div class="circ-item"><span class="circ-item-name">Shadowboxing — Footwork</span><span class="circ-item-val">40s</span></div>
+      <div class="circ-item"><span class="circ-item-name">Lateral Shuffle Sprints</span><span class="circ-item-val">40s</span></div>
+      <div class="circ-item"><span class="circ-item-name">Squat Jumps</span><span class="circ-item-val">40s</span></div>
+      <div class="circ-item"><span class="circ-item-name">Mountain Climbers</span><span class="circ-item-val">40s</span></div>
+    </div>
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-title green">Core + Stretch</span>
+    <span class="sec-time">10 min</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="ex-list">
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🐛</div>
+        <div class="ex-main">
+          <div class="ex-name">Dead Bug</div>
+          <div class="ex-tags"><span class="tag t-gr">Deep Core</span><span class="tag t-o">Punch Power Transfer</span></div>
+        </div>
+        <div class="ex-sets">3 × 8</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        On back, arms up, legs in tabletop. Lower opposite arm and leg together — slow 4-count. Lower back stays flat on the floor. No shoulder involvement at all.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🌀</div>
+        <div class="ex-main">
+          <div class="ex-name">Plank Hip Dips</div>
+          <div class="ex-tags"><span class="tag t-gr">Obliques</span><span class="tag t-gr">Rotational Core</span></div>
+        </div>
+        <div class="ex-sets">3 × 30s</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Forearm plank — elbows under shoulders. Slowly rotate hips to dip one side toward the floor, then the other. Controlled rhythm. Shoulders completely static — all movement comes from the waist down.
+        <div class="cue">↳ Trains the obliques with zero shoulder risk. Challenging when done slowly with intent.</div>
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🧎</div>
+        <div class="ex-main">
+          <div class="ex-name">Hip Flexor + Pigeon + Hamstring</div>
+          <div class="ex-tags"><span class="tag t-p">Hip Release</span></div>
+        </div>
+        <div class="ex-sets">45s each</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Low lunge hip flexor → Pigeon for glute and hip → Standing hamstring with foot on bench. Both sides each stretch.
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== DAY 3 ===== -->
+<div class="panel" id="p2">
+
+  <div class="sec-head">
+    <span class="sec-title corr">Correctives + Warm-Up</span>
+    <span class="sec-time">8 min</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="ex-list">
+    <div class="ex corr" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🎯</div>
+        <div class="ex-main">
+          <div class="ex-name">Chin Tucks + Thread the Needle + Inchworm</div>
+          <div class="ex-tags"><span class="tag t-c">Corrective</span><span class="tag t-c">Full Body Prep</span></div>
+        </div>
+        <div class="ex-sets">12 / 8 / 6</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Chin tucks × 12 (3s hold). Thread the needle × 8 each side (2s hold at end range). Inchworm × 6 — walk out to plank, hold 2 seconds, walk back. No shoulder load in any of these.
+      </div></div>
+    </div>
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-title orange">Explosive Power</span>
+    <span class="sec-time">12 min · Intent over load</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="ex-list">
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">⚡</div>
+        <div class="ex-main">
+          <div class="ex-name">DB Swing</div>
+          <div class="ex-tags"><span class="tag t-p">Hip Drive</span><span class="tag t-o">Explosive Power</span></div>
+        </div>
+        <div class="ex-sets">4 × 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Hold one DB with both hands. Hip hinge back, then explosive hip drive forward — let the DB swing to chest height on momentum alone. Arms are relaxed, not pulling. Reset and repeat.
+        <div class="cue">↳ Power comes from the hips, not the arms. Same kinetic chain as a cross punch. No overhead movement, no shoulder strain.</div>
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">💥</div>
+        <div class="ex-main">
+          <div class="ex-name">Plyometric Push-Up</div>
+          <div class="ex-tags"><span class="tag t-b">Explosive Push</span><span class="tag t-o">Hand Speed</span></div>
+        </div>
+        <div class="ex-sets">3 × 8</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Slow 3-count lower, then explosive push to lift hands off the floor. Land soft and controlled. From knees is equally effective and fine.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🦘</div>
+        <div class="ex-main">
+          <div class="ex-name">Broad Jump</div>
+          <div class="ex-tags"><span class="tag t-p">Explosive Legs</span><span class="tag t-o">Ring Movement</span></div>
+        </div>
+        <div class="ex-sets">4 × 5</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Squat down, swing arms back, then explode forward — jump as far as possible. Land soft through the whole foot. Walk back to start. Zero shoulder involvement, pure leg and hip power.
+        <div class="cue">↳ Max effort on every rep. Quality over speed — full reset between jumps.</div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-title orange">Full Body Strength</span>
+    <span class="sec-time">18 min</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="ex-list">
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">⚓</div>
+        <div class="ex-main">
+          <div class="ex-name">Dumbbell Deadlift</div>
+          <div class="ex-tags"><span class="tag t-p">Posterior Chain</span><span class="tag t-o">Primary Strength</span></div>
+        </div>
+        <div class="ex-sets">3–5 × 8</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Hip hinge. Back flat, chest up. Drive through heels. Squeeze glutes at top. Prioritise load increases here above all other lifts.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🚣</div>
+        <div class="ex-main">
+          <div class="ex-name">Renegade Row</div>
+          <div class="ex-tags"><span class="tag t-b">Back</span><span class="tag t-gr">Anti-Rotation Core</span></div>
+        </div>
+        <div class="ex-sets">3 × 8</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Plank on DBs, wide feet for stability. Row one side — hips completely level, no rotation. Supporting shoulder stays packed and stable. Go from knees if hips are dipping.
+        <div class="cue">↳ Hips stay square. The moment they rotate, reduce weight.</div>
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🔀</div>
+        <div class="ex-main">
+          <div class="ex-name">Reverse Lunge + Bicep Curl</div>
+          <div class="ex-tags"><span class="tag t-p">Legs</span><span class="tag t-b">Bicep</span><span class="tag t-gr">Balance</span></div>
+        </div>
+        <div class="ex-sets">3 × 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Step back into lunge. As you drive back to standing, curl the DBs in a hammer grip. One fluid movement. No shoulder involvement — a full-body combo that's completely safe to go heavy on.
+      </div></div>
+    </div>
+
+    <div class="ex" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🔃</div>
+        <div class="ex-main">
+          <div class="ex-name">RDL to Hammer Curl</div>
+          <div class="ex-tags"><span class="tag t-p">Hamstrings</span><span class="tag t-b">Bicep</span></div>
+        </div>
+        <div class="ex-sets">3 × 10</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        RDL down — stand back up and immediately curl in neutral grip with no pause. No rest between movements.
+      </div></div>
+    </div>
+
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-title gold">Boxing Circuit</span>
+    <span class="sec-time">3 rounds · 45s on / 15s off</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="circuit">
+    <div class="circ-head">
+      <span class="circ-title">Knockout Finisher</span>
+      <span class="circ-meta">60s rest between rounds</span>
+    </div>
+    <div class="circ-items">
+      <div class="circ-item"><span class="circ-item-name">Shadowboxing — Power Combos</span><span class="circ-item-val">45s</span></div>
+      <div class="circ-item"><span class="circ-item-name">Squat Thrusts (No Push-Up)</span><span class="circ-item-val">45s</span></div>
+      <div class="circ-item"><span class="circ-item-name">High Knees</span><span class="circ-item-val">45s</span></div>
+      <div class="circ-item"><span class="circ-item-name">Squat + Cross Punch</span><span class="circ-item-val">45s</span></div>
+    </div>
+  </div>
+
+  <div class="sec-head">
+    <span class="sec-title green">Postural Close-Out</span>
+    <span class="sec-time">8 min</span>
+    <div class="sec-head-line"></div>
+  </div>
+  <div class="ex-list">
+    <div class="ex corr" onclick="tog(this)">
+      <div class="ex-row">
+        <div class="ex-icon">🌿</div>
+        <div class="ex-main">
+          <div class="ex-name">Full UCS Stretch Sequence</div>
+          <div class="ex-tags"><span class="tag t-c">Pecs</span><span class="tag t-c">Lats</span><span class="tag t-c">Neck</span><span class="tag t-c">Thoracic</span></div>
+        </div>
+        <div class="ex-sets">45s each</div>
+      </div>
+      <div class="ex-body"><div class="ex-detail">
+        Corner pec stretch → Lat stretch over bench → Upper trap both sides → Thread the needle 4 each side → Suboccipital release 60s lying down. Slow breathing, eyes closed to finish.
+        <div class="cue">↳ Done consistently for 6 weeks — shoulder pain and headaches will reduce significantly.</div>
+      </div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-brand">Rise <span>&</span> Strike</div>
+  <div class="footer-coach">Programme by <strong>Coach Brad</strong></div>
+</div>
+
+<script>
+  function tog(el) { el.classList.toggle('open'); }
+  function switchDay(i) {
+    document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active', i===j));
+    document.querySelectorAll('.panel').forEach((p,j) => p.classList.toggle('active', i===j));
+    document.querySelector('.tabs').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+</script>
+</body>
+</html>
